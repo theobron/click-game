@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Clicker Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        #cookie {
+            width: 100px;
+            height: 100px;
+            background-color: #f4a261;
+            border-radius: 50%;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+        #clickCount, #upgradeInfo, #multiplierInfo, #rebirthInfo, #rebirthCount {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #upgradeButton, #multiplierButton, #rebirthButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .disabled {
+            background-color: #d3d3d3;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cookie"></div>
+    <div id="clickCount">Clicks: 0</div>
+
+    <div id="upgradeInfo">Auto-clicker: +1 click per second (Cost: 10 clicks)</div>
+    <button id="upgradeButton">Buy Auto-clicker Upgrade</button>
+
+    <div id="multiplierInfo">Click Multiplier: +1 per click (Cost: 50 clicks)</div>
+    <button id="multiplierButton">Buy Click Multiplier Upgrade</button>
+
+    <div id="rebirthInfo" style="display:none;">You have maxed out all upgrades! Ready to rebirth?</div>
+    <button id="rebirthButton" style="display:none;">Rebirth</button>
+
+    <div id="rebirthCount">Rebirths: 0</div>
+
+    <script>
+        // Initialize game variables
+        let clickCount = 0;  // Number of clicks
+        let autoClicksPerSecond = 0;  // Number of auto-clicks per second
+        let clickMultiplier = 1;  // The multiplier for clicks
+        let autoUpgradeCost = 10;  // Cost of the auto-clicker upgrade
+        let multiplierUpgradeCost = 50;  // Cost of the click multiplier upgrade
+        let autoUpgradeCount = 0;  // Track the number of auto-clicker upgrades bought
+        let multiplierUpgradeCount = 0;  // Track the number of click multiplier upgrades bought
+        let rebirthCount = 0;  // Track the number of rebirths
+
+        // Get references to the elements
+        const cookie = document.getElementById('cookie');
+        const clickCountElement = document.getElementById('clickCount');
+        const upgradeButton = document.getElementById('upgradeButton');
+        const multiplierButton = document.getElementById('multiplierButton');
+        const rebirthButton = document.getElementById('rebirthButton');
+        const upgradeInfo = document.getElementById('upgradeInfo');
+        const multiplierInfo = document.getElementById('multiplierInfo');
+        const rebirthInfo = document.getElementById('rebirthInfo');
+        const rebirthCountElement = document.getElementById('rebirthCount');
+
+        // Function to update the click count display
+        function updateClickCount() {
+            clickCountElement.textContent = 'Clicks: ' + clickCount;
+        }
+
+        // Function to handle cookie clicks
+        cookie.addEventListener('click', function() {
+            clickCount += clickMultiplier;  // Add clicks based on multiplier
+            updateClickCount();
+        });
+
+        // Function to handle buying auto-clicker upgrade
+        upgradeButton.addEventListener('click', function() {
+            if (clickCount >= autoUpgradeCost && autoUpgradeCount < 10) {
+                clickCount -= autoUpgradeCost;  // Deduct the cost of the upgrade
+                autoClicksPerSecond++;  // Increase the auto-clickers per second
+                autoUpgradeCount++;  // Increment the auto-upgrade count
+                autoUpgradeCost = Math.floor(autoUpgradeCost * 1.5);  // Increase the cost of the next upgrade
+                upgradeInfo.textContent = `Auto-clicker: +1 click per second (Cost: ${autoUpgradeCost} clicks)`;  // Update auto-clicker cost
+                updateClickCount();
+
+                // Disable the button if the max upgrades have been reached
+                if (autoUpgradeCount >= 10) {
+                    upgradeInfo.textContent = "Auto-clicker: Max Upgrade";
+                    upgradeButton.classList.add('disabled');
+                    upgradeButton.disabled = true;
+                }
+
+                // Check if both upgrades are maxed, then show the rebirth button
+                checkMaxUpgrades();
+            }
+        });
+
+        // Function to handle buying click multiplier upgrade
+        multiplierButton.addEventListener('click', function() {
+            if (clickCount >= multiplierUpgradeCost && multiplierUpgradeCount < 10) {
+                clickCount -= multiplierUpgradeCost;  // Deduct the cost of the upgrade
+                clickMultiplier++;  // Increase the multiplier for clicks
+                multiplierUpgradeCount++;  // Increment the multiplier upgrade count
+                multiplierUpgradeCost = Math.floor(multiplierUpgradeCost * 1.5);  // Increase the cost of the next upgrade
+                multiplierInfo.textContent = `Click Multiplier: +1 per click (Cost: ${multiplierUpgradeCost} clicks)`;  // Update multiplier cost
+                updateClickCount();
+
+                // Disable the button if the max upgrades have been reached
+                if (multiplierUpgradeCount >= 10) {
+                    multiplierInfo.textContent = "Click Multiplier: Max Upgrade";
+                    multiplierButton.classList.add('disabled');
+                    multiplierButton.disabled = true;
+                }
+
+                // Check if both upgrades are maxed, then show the rebirth button
+                checkMaxUpgrades();
+            }
+        });
+
+        // Check if both upgrades are maxed to display the rebirth button
+        function checkMaxUpgrades() {
+            if (autoUpgradeCount === 10 && multiplierUpgradeCount === 10) {
+                rebirthInfo.style.display = "block";
+                rebirthButton.style.display = "inline-block";
+            }
+        }
+
+        // Function to handle rebirth
+        rebirthButton.addEventListener('click', function() {
+            // Reset the game state
+            clickCount = 0;
+            autoClicksPerSecond = 0;
+            clickMultiplier = 1;
+            autoUpgradeCount = 0;
+            multiplierUpgradeCount = 0;
+            autoUpgradeCost = 10;
+            multiplierUpgradeCost = 50;
+
+            // Increment rebirth count and update display
+            rebirthCount++;
+            rebirthCountElement.textContent = `Rebirths: ${rebirthCount}`;
+
+            // Hide the rebirth button and reset the upgrade information
+            rebirthButton.style.display = "none";
+            rebirthInfo.style.display = "none";
+            upgradeButton.disabled = false;
+            multiplierButton.disabled = false;
+            upgradeButton.classList.remove('disabled');
+            multiplierButton.classList.remove('disabled');
+            upgradeInfo.textContent = `Auto-clicker: +1 click per second (Cost: ${autoUpgradeCost} clicks)`;
+            multiplierInfo.textContent = `Click Multiplier: +1 per click (Cost: ${multiplierUpgradeCost} clicks)`;
+
+            // Update the click count display
+            updateClickCount();
+        });
+
+        // Auto-click function that adds clicks every second
+        function autoClick() {
+            clickCount += autoClicksPerSecond;  // Add clicks from auto-clickers
+            updateClickCount();
+        }
+
+        // Set an interval for auto-clicking every second
+        setInterval(autoClick, 1000);  // Every 1000 milliseconds (1 second)
+
+    </script>
+
+</body>
+</html>
