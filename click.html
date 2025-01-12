@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Block Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        #block {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+        #clickCount {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="block"></div>
+    <div id="clickCount">Clicks: 0</div>
+
+    <script>
+        // Initialize click count
+        let clickCount = 0;
+
+        // Get references to the block and click count elements
+        const block = document.getElementById('block');
+        const clickCountElement = document.getElementById('clickCount');
+
+        // Add event listener to the block
+        block.addEventListener('click', function() {
+            // Increase the click count by 1
+            clickCount++;
+
+            // Update the click count on the page
+            clickCountElement.textContent = 'Clicks: ' + clickCount;
+        });
+    </script>
+
+</body>
+</html>
